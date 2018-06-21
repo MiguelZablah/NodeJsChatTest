@@ -11,17 +11,18 @@ socket.on('disconnect', () => {
 
 // Recibe new message
 socket.on('newMessage', (message) => {
-    // console.log('New Message', message);
+    var formattedTime = moment(message.createdAt).format('hh:mm a');
     var li = $('<li></li>');
-    li.text(`${message.from}: ${message.text}`);
+    li.text(`${message.from} ${formattedTime}: ${message.text}`);
 
     $('#messages').append(li);
 });
 // Recibin Location Message
 socket.on('newLocationMessage', function (message) {
+    var formattedTime = moment(message.createdAt).format('hh:mm a');
     var li = $('<li></li>');
     var a = $('<a target="_blank">My Current Location</a>');
-    li.text(`${message.from}: `);
+    li.text(`${message.from} ${formattedTime}: `);
     a.attr('href', message.url);
 
     li.append(a);
@@ -32,6 +33,9 @@ socket.on('newLocationMessage', function (message) {
 var messageTextBox = $('[name=message]');
 $('#message-form').on('submit', function (e) {
     e.preventDefault();
+
+    if (messageTextBox.val() === '' || messageTextBox.val() === null)
+        return alert('Please tipe a message.');
 
     socket.emit('createMessage', {
             from: 'User',
