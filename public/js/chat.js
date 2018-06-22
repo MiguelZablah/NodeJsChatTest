@@ -2,11 +2,36 @@ var socket = io();
 
 // User connected
 socket.on('connect', () => {
-    console.log('Connected to server');
+    try{
+        var params = $.deparam();
+        socket.emit('join', params, function(e) {
+            if (e) {
+                alert(e);
+                return window.location.href = '/';
+            }
+            console.log('Connected to server');
+        });
+    }catch{
+        return window.location.href = '/';
+    }
+
 });
+
 // User disconected
 socket.on('disconnect', () => {
     console.log('Disconnected!');
+});
+
+// User update
+socket.on('updateUserList', (users) => {
+    // console.log('User List', users);
+    var ol = $('<ol></ol>');
+
+    users.forEach((user) => {
+        ol.append($('<li></li>').text(user));
+    });
+
+    $('#users').html(ol);
 });
 
 // Recibe new message
