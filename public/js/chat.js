@@ -84,7 +84,6 @@ $('#message-form').on('submit', function (e) {
         return alert('Please tipe a message.');
 
     socket.emit('createMessage', {
-            from: 'User',
             text: messageTextBox.val()
         },
         function () {

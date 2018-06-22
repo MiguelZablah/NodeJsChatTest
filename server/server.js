@@ -43,14 +43,24 @@ io.on('connection', (socket) => {
 
     // When user create message
     socket.on('createMessage', (message, callback) => {
-        console.log('Created Message', message);
+        var user = users.getUser(socket.id);
+        
+        if(!user && !isRealString(message.text))
+            return callback('Not valid message or user');
+
+        console.log(`User: ${user.name}, Says: ${message}, to room: ${user.room}`);
         // Send new message
-        io.emit('newMessage', generateMessage(message.from, message.text));
+        io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
         callback();
     });
 
     socket.on('createLocationMessage', (cords) => {
-        io.emit('newLocationMessage', generateLocationMessage('Admin', cords.lati, cords.long));
+        var user = users.getUser(socket.id);
+
+        if(!user && !cords)
+            return callback('Not valid message or cords');
+
+        io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, cords.lati, cords.long));
     });
 
     socket.on('disconnect', () => {
