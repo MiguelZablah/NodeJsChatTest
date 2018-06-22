@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
         if(!user && !isRealString(message.text))
             return callback('Not valid message or user');
 
-        console.log(`User: ${user.name}, Says: ${message}, to room: ${user.room}`);
+        console.log(`User: ${user.name}, Says: "${message.text}", to Room: ${user.room}`);
         // Send new message
         io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
         callback();
